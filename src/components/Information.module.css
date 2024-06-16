@@ -1,0 +1,10 @@
+.main-info {
+	display: flex;
+	justify-content: center;
+}
+
+.text {
+	width: 100px;
+	font-weight: bold;
+	font-size: 18px;
+}

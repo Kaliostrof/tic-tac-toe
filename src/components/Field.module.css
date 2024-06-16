@@ -1,0 +1,21 @@
+.main-field {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	max-width: 220px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.btn {
+	color: rgb(8, 37, 37);
+	background-color: chocolate;
+	width: 70px;
+	height: 70px;
+}
+
+.btn:hover,
+.btn:active,
+.btn:focus {
+	background-color: rgb(218, 142, 88);
+}
