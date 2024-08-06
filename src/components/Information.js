@@ -1,15 +1,7 @@
 import styles from './Information.module.css';
 import PropTypes from 'prop-types';
 
-export const Information = ({ currentPlayer, isDraw, isGameEnded }) => {
-	let step;
-	if (isDraw === true) {
-		step = 'Ничья';
-	} else if (isDraw === false && isGameEnded === true) {
-		step = `Победа: ${currentPlayer}`;
-	} else if (isDraw === false && isGameEnded === false) {
-		step = `Ходит: ${currentPlayer}`;
-	}
+export const Information = ({ step }) => {
 	return <InformationLayout step={step} />;
 };
 
@@ -22,9 +14,7 @@ const InformationLayout = ({ step }) => {
 };
 
 Information.propTypes = {
-	currentPlayer: PropTypes.string,
-	isDraw: PropTypes.bool,
-	isGameEnded: PropTypes.bool,
+	step: PropTypes.string,
 };
 
 InformationLayout.propTypes = {

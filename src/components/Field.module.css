@@ -12,6 +12,8 @@
 	background-color: chocolate;
 	width: 70px;
 	height: 70px;
+	font-size: 40px;
+	font-weight: bold;
 }
 
 .btn:hover,
