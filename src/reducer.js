@@ -22,7 +22,7 @@ export const appReducer = (state = initialState, action) => {
 		case 'SET_CURRENT_PLAYER': {
 			return {
 				...state,
-				currentPlayer: payload,
+				currentPlayer: state.currentPlayer === '×' ? 'o' : '×',
 			};
 		}
 		case 'SET_FIELD': {

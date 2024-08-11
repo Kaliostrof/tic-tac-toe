@@ -1,14 +1,14 @@
-import { store } from '../store';
+import { useSelector } from 'react-redux';
 import styles from './Field.module.css';
 import PropTypes from 'prop-types';
+import { selectField } from '../selectors';
 
-export const Field = ({ onHandleClick }) => {
-	const { field } = store.getState();
-	console.log(field);
-	return <FieldLayout field={field} onHandleClick={onHandleClick} />;
+export const Field = ({ handleClick }) => {
+	const field = useSelector(selectField);
+	return <FieldLayout field={field} handleClick={handleClick} />;
 };
 
-const FieldLayout = ({ field, onHandleClick }) => {
+const FieldLayout = ({ field, handleClick }) => {
 	return (
 		<div className={styles['main-field']}>
 			{field.map((elem, index) => {
@@ -17,7 +17,7 @@ const FieldLayout = ({ field, onHandleClick }) => {
 						key={index}
 						className={styles.btn}
 						onClick={() => {
-							onHandleClick(index);
+							handleClick(index);
 						}}
 					>
 						{elem}
@@ -29,11 +29,10 @@ const FieldLayout = ({ field, onHandleClick }) => {
 };
 
 Field.propTypes = {
-	field: PropTypes.array,
-	onHandleClick: PropTypes.func,
+	handleClick: PropTypes.func,
 };
 
 FieldLayout.propTypes = {
 	field: PropTypes.array,
-	onHandleClick: PropTypes.func,
+	handleClick: PropTypes.func,
 };

@@ -2,8 +2,7 @@ import styles from './Game.module.css';
 import { Field } from './components/Field';
 import { Information } from './components/Information';
 import PropTypes from 'prop-types';
-import { store } from './store';
-import { useRender } from './useRender';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 	resetGame,
 	setCurrenPlayer,
@@ -11,6 +10,12 @@ import {
 	setIsDraw,
 	setIsGameEnded,
 } from './actions';
+import {
+	selectCurrentPlayer,
+	// selectDraw,
+	selectField,
+	selectGameEnded,
+} from './selectors';
 
 const WIN_PATTERNS = [
 	[0, 1, 2],
@@ -24,76 +29,59 @@ const WIN_PATTERNS = [
 ];
 
 export const Game = () => {
-	const { field } = store.getState();
-	const { currentPlayer } = store.getState();
-	const { isDraw } = store.getState();
-	const { isGameEnded } = store.getState();
+	const field = useSelector(selectField);
+	const currentPlayer = useSelector(selectCurrentPlayer);
+	// const isDraw = useSelector(selectDraw);
+	const isGameEnded = useSelector(selectGameEnded);
 
-	useRender();
-	// const [currentPlayer, setCurrentPlayer] = useState('×');
-	// const [isGameEnded, setIsGameEnded] = useState(false);
-	// const [isDraw, setIsDraw] = useState(false);
-	// const [field, setField] = useState(['', '', '', '', '', '', '', '', '']);
+	const dispatch = useDispatch();
 
 	const resetBtnHandler = () => {
-		store.dispatch(resetGame());
+		dispatch(resetGame());
 	};
 
-	let step;
-	if (isDraw === true) {
-		step = 'Ничья';
-	} else if (isDraw === false && isGameEnded === true) {
-		step = `Победа: ${currentPlayer}`;
-	} else if (isDraw === false && isGameEnded === false) {
-		step = `Ходит: ${currentPlayer}`;
-	}
-
-	const onHandleClick = (index) => {
+	const handleClick = (index) => {
 		if (field[index] === '' && isGameEnded === false) {
 			field[index] = currentPlayer;
-			const updatedField = [...field];
-			store.dispatch(setField(updatedField)); // setField(updatedField);
-			const player = currentPlayer === '×' ? 'o' : '×';
+			dispatch(setField([...field]));
+
 			let victory = false;
 
 			const isFieldDraw = field.every((el) => {
 				return el !== '';
 			});
-			store.dispatch(setIsDraw(isFieldDraw)); // setIsDraw(isDraw);
+			dispatch(setIsDraw(isFieldDraw));
+
 			WIN_PATTERNS.forEach((arr) => {
 				const isWinner = arr.every((index) => field[index] === currentPlayer);
 				if (isWinner === true) {
-					store.dispatch(setIsGameEnded()); // setIsGameEnded(true);
+					dispatch(setIsGameEnded());
 					victory = true;
 				}
 			});
 			if (victory === false) {
-				store.dispatch(setCurrenPlayer(player)); // setCurrentPlayer((newPlayer) => player);
+				dispatch(setCurrenPlayer());
 			}
 		}
-		console.log('Draw', isDraw);
-		console.log('GameEnded', isGameEnded);
-		console.log('player', currentPlayer);
-		console.log('player', field);
 	};
 
 	return (
 		<>
 			<GameLayout
-				onHandleClick={onHandleClick}
-				step={step}
+				handleClick={handleClick}
+				// step={step}
 				onResetBtnHandler={resetBtnHandler}
 			/>
 		</>
 	);
 };
 
-const GameLayout = ({ onResetBtnHandler, onHandleClick, step }) => {
+const GameLayout = ({ onResetBtnHandler, handleClick }) => {
 	return (
 		<div className={styles.app}>
 			<div className={styles.row}>
-				<Information step={step} />
-				<Field onHandleClick={onHandleClick} />
+				<Information />
+				<Field handleClick={handleClick} />
 				<button onClick={onResetBtnHandler} className={styles['re-btn']}>
 					Начать заново
 				</button>
@@ -103,8 +91,6 @@ const GameLayout = ({ onResetBtnHandler, onHandleClick, step }) => {
 };
 
 GameLayout.propTypes = {
-	field: PropTypes.array,
-	onHandleClick: PropTypes.func,
-	onResetBtnHandler: PropTypes.func,
+	handleClick: PropTypes.func,
 	step: PropTypes.string,
 };

@@ -1,6 +1,5 @@
-export const setCurrenPlayer = (player) => ({
+export const setCurrenPlayer = () => ({
 	type: 'SET_CURRENT_PLAYER',
-	payload: player,
 });
 
 export const setField = (data) => ({
