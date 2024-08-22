@@ -1,38 +1,86 @@
-import { useSelector } from 'react-redux';
-import styles from './Field.module.css';
-import PropTypes from 'prop-types';
-import { selectField } from '../selectors';
+import { connect } from 'react-redux';
+// import styles from './Field.module.css';
+import { setCurrenPlayer, setField, setIsDraw, setIsGameEnded } from '../store/actions';
+import { WIN_PATTERNS } from '../constants/win-pattern';
+import { Component } from 'react';
 
-export const Field = ({ handleClick }) => {
-	const field = useSelector(selectField);
-	return <FieldLayout field={field} handleClick={handleClick} />;
-};
+class FieldContainer extends Component {
+	constructor() {
+		super();
+	}
 
-const FieldLayout = ({ field, handleClick }) => {
-	return (
-		<div className={styles['main-field']}>
-			{field.map((elem, index) => {
-				return (
-					<button
-						key={index}
-						className={styles.btn}
-						onClick={() => {
-							handleClick(index);
-						}}
-					>
-						{elem}
-					</button>
+	handleClick = (index) => {
+		if (this.props.field[index] === '' && this.props.isGameEnded === false) {
+			this.props.field[index] = this.props.currentPlayer;
+			this.props.onSetField([...this.props.field]);
+
+			let victory = false;
+
+			const isFieldDraw = this.props.field.every((el) => {
+				return el !== '';
+			});
+			this.props.onSetIsDraw(isFieldDraw);
+
+			WIN_PATTERNS.forEach((arr) => {
+				const isWinner = arr.every(
+					(index) => this.props.field[index] === this.props.currentPlayer,
 				);
-			})}
-		</div>
-	);
-};
+				if (isWinner) {
+					this.props.onSetGameEnd();
+					victory = true;
+				}
+			});
+			if (!victory) {
+				this.props.onSetCurrentPlayer();
+			}
+		}
+	};
 
-Field.propTypes = {
-	handleClick: PropTypes.func,
-};
+	render() {
+		return (
+			<div
+				// className={styles['main-field']}
+				className="flex flex-wrap max-w-64 mb-4 mt-2"
+			>
+				{this.props.field.map((elem, index) => {
+					return (
+						<button
+							key={index}
+							// className={styles.btn}
+							className="size-20 ml-1 mb-1 hover:rounded-2xl  text-5xl font-bold text-zinc-950 shadow-sm shadow-blue-900 rounded-md bg-gradient-to-tr from-blue-400 via-blue-900 to-blue-900"
+							onClick={() => {
+								this.handleClick(index);
+							}}
+						>
+							{elem}
+						</button>
+					);
+				})}
+			</div>
+		);
+	}
+}
 
-FieldLayout.propTypes = {
-	field: PropTypes.array,
-	handleClick: PropTypes.func,
-};
+const mapDispatchToProps = (dispatch) => ({
+	onSetField: (field) => dispatch(setField(field)),
+	onSetIsDraw: (isFieldDraw) => dispatch(setIsDraw(isFieldDraw)),
+	onSetGameEnd: () => dispatch(setIsGameEnded()),
+	onSetCurrentPlayer: () => dispatch(setCurrenPlayer()),
+});
+
+const mapStateToProps = (state) => ({
+	currentPlayer: state.currentPlayer,
+	isGameEnded: state.isGameEnded,
+	field: state.field,
+});
+
+export const Field = connect(mapStateToProps, mapDispatchToProps)(FieldContainer);
+
+// Field.propTypes = {
+// 	handleClick: PropTypes.func,
+// };
+
+// FieldLayout.propTypes = {
+// 	field: PropTypes.array,
+// 	handleClick: PropTypes.func,
+// };

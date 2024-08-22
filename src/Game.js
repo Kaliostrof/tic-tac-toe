@@ -1,96 +1,51 @@
-import styles from './Game.module.css';
+// import styles from './Game.module.css';
 import { Field } from './components/Field';
 import { Information } from './components/Information';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	resetGame,
-	setCurrenPlayer,
-	setField,
-	setIsDraw,
-	setIsGameEnded,
-} from './actions';
-import {
-	selectCurrentPlayer,
-	// selectDraw,
-	selectField,
-	selectGameEnded,
-} from './selectors';
+import { connect } from 'react-redux';
+import { resetGame } from './store/actions';
+import { Component } from 'react';
+// import './index.css';
 
-const WIN_PATTERNS = [
-	[0, 1, 2],
-	[3, 4, 5],
-	[6, 7, 8], // Варианты побед по горизонтали
-	[0, 3, 6],
-	[1, 4, 7],
-	[2, 5, 8], // Варианты побед по вертикали
-	[0, 4, 8],
-	[2, 4, 6], // Варианты побед по диагонали
-];
+class GameContainer extends Component {
+	constructor(props) {
+		super(props);
+	}
 
-export const Game = () => {
-	const field = useSelector(selectField);
-	const currentPlayer = useSelector(selectCurrentPlayer);
-	// const isDraw = useSelector(selectDraw);
-	const isGameEnded = useSelector(selectGameEnded);
-
-	const dispatch = useDispatch();
-
-	const resetBtnHandler = () => {
-		dispatch(resetGame());
-	};
-
-	const handleClick = (index) => {
-		if (field[index] === '' && isGameEnded === false) {
-			field[index] = currentPlayer;
-			dispatch(setField([...field]));
-
-			let victory = false;
-
-			const isFieldDraw = field.every((el) => {
-				return el !== '';
-			});
-			dispatch(setIsDraw(isFieldDraw));
-
-			WIN_PATTERNS.forEach((arr) => {
-				const isWinner = arr.every((index) => field[index] === currentPlayer);
-				if (isWinner === true) {
-					dispatch(setIsGameEnded());
-					victory = true;
-				}
-			});
-			if (victory === false) {
-				dispatch(setCurrenPlayer());
-			}
-		}
-	};
-
-	return (
-		<>
-			<GameLayout
-				handleClick={handleClick}
-				// step={step}
-				onResetBtnHandler={resetBtnHandler}
-			/>
-		</>
-	);
-};
-
-const GameLayout = ({ onResetBtnHandler, handleClick }) => {
-	return (
-		<div className={styles.app}>
-			<div className={styles.row}>
-				<Information />
-				<Field handleClick={handleClick} />
-				<button onClick={onResetBtnHandler} className={styles['re-btn']}>
-					Начать заново
-				</button>
+	// resetBtnHandler() {
+	// 	console.log(resetGame());
+	// 	this.setState(resetGame());
+	// }
+	render() {
+		return (
+			<div
+				// className={styles.app}
+				className="flex ml-20 mr-20 py-10 justify-center box-border shadow-2xl shadow-green-600 h-screen bg-gradient-to-tr from-lime-200 via-green-500 to-lime-200"
+			>
+				<div
+					// className={styles.row}
+					className="table-row justify-center text-center max-w-30"
+				>
+					<Information />
+					<Field />
+					<button
+						onClick={this.props.resetBtnHandler}
+						// className={styles['re-btn']}
+						className="lowercase font-serif font-bold text-center shadow-md shadow-sky-800 p-2 rounded-3xl bg-gradient-to-tr from-lime-200 via-blue-800 to-blue-900 hover:animate-pulse"
+					>
+						Начать заново
+					</button>
+				</div>
 			</div>
-		</div>
-	);
-};
+		);
+	}
+}
 
-GameLayout.propTypes = {
-	handleClick: PropTypes.func,
-	step: PropTypes.string,
-};
+const mapDispatchToProps = (dispatch) => ({
+	resetBtnHandler: () => dispatch(resetGame()),
+});
+
+export const Game = connect(null, mapDispatchToProps)(GameContainer);
+
+// GameContainer.propTypes = {
+// 	handleClick: PropTypes.func,
+// };
