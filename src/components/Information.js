@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import styles from './Information.module.css';
 import PropTypes from 'prop-types';
-import { selectCurrentPlayer, selectDraw, selectGameEnded } from '../selectors';
+import { selectCurrentPlayer, selectDraw, selectGameEnded } from '../store/selectors';
 
 export const Information = () => {
 	const isDraw = useSelector(selectDraw);

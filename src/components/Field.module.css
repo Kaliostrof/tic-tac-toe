@@ -8,16 +8,18 @@
 }
 
 .btn {
-	color: rgb(8, 37, 37);
-	background-color: chocolate;
+	color: rgb(235, 196, 196);
+	background: linear-gradient(45deg, rgb(2, 2, 104), rgb(53, 53, 155));
 	width: 70px;
 	height: 70px;
 	font-size: 40px;
+	border-radius: 6px;
 	font-weight: bold;
 }
 
 .btn:hover,
 .btn:active,
 .btn:focus {
-	background-color: rgb(218, 142, 88);
+	background: rgb(5, 109, 112);
+	cursor: pointer;
 }

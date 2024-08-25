@@ -3,6 +3,10 @@
 	justify-content: center;
 }
 
+.main-info::before {
+	filter: blur(1.5rem);
+}
+
 .text {
 	width: 100px;
 	font-weight: bold;
